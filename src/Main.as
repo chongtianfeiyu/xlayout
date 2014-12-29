@@ -6,7 +6,7 @@ package
 	
 	import starling.core.Starling;
 
-	[SWF(width="900",height="300")]
+	[SWF(width="1024",height="800")]
 	public class Main extends Sprite
 	{
 		public function Main()
@@ -14,7 +14,8 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.color = 0x000000;
-			var s:Starling = new Starling(LayoutTest,stage); s.start();
+			var s:Starling = new Starling(LayoutTest,stage);
+			s.start();
 		}
 	}
 }
