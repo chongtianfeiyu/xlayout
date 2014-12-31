@@ -1,10 +1,8 @@
 package
 {
-	import com.github.moketao.xlayout.LayoutGroupBox;
 	
 	import flash.geom.Rectangle;
 	
-	import feathers.controls.LayoutGroup;
 	import feathers.controls.Panel;
 	import feathers.layout.AnchorLayout;
 	import feathers.layout.HorizontalLayoutData;
@@ -17,7 +15,8 @@ package
 	{
 		private var p:Panel;
 
-		public var tool:LayoutSetting;
+		public static var theme:MetalWorksDesktopTheme;
+
 		public function LayoutTest()
 		{
 			addEventListener(Event.ADDED_TO_STAGE,onAdd);
@@ -25,9 +24,9 @@ package
 		
 		private function onAdd(e:*):void
 		{
-			var theme:MetalWorksDesktopTheme = new MetalWorksDesktopTheme();
+			theme = new MetalWorksDesktopTheme();
 			
-			var ui:LayoutGroupBox = new LayoutGroupBox(this,true);
+			var ui:XLayoutGroup = new XLayoutGroup(this,true);
 			ui.name="uiRoot";
 			
 			var d1:HorizontalLayoutData = new HorizontalLayoutData();
@@ -38,9 +37,11 @@ package
 			var layout:AnchorLayout = new AnchorLayout();
 			ui.layout = layout;
 			
-			tool = new LayoutSetting("布局面板",new Rectangle(-200,-10,stage.stageWidth-10,stage.stageHeight-10));
-			tool.x = tool.y = 3;
+			var tool:PixelSetting = new PixelSetting("绝对值布局",new Rectangle(-200,-10,stage.stageWidth-10,stage.stageHeight-10));
+			tool.x = 560; 
+			tool.y = 120;
 			stage.addChild(tool);
+			
 		}
 		
 	}
