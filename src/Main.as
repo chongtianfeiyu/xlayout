@@ -11,10 +11,11 @@ package
 	{
 		public function Main()
 		{
+			stage.frameRate = 60;
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.color = 0x000000;
-			var s:Starling = new Starling(LayoutTest,stage);
+			var s:Starling = new Starling(XLayoutEditor,stage);
 			s.start();
 		}
 	}

@@ -76,6 +76,7 @@ package feathers.controls
 		public function ToggleButton()
 		{
 			super();
+			alpha = .6;
 		}
 
 		/**
@@ -163,6 +164,7 @@ package feathers.controls
 			{
 				return;
 			}
+			this.alpha = value? 1:0.6;
 			this._isSelected = value;
 			this.invalidate(INVALIDATION_FLAG_SELECTED);
 			this.invalidate(INVALIDATION_FLAG_STATE);

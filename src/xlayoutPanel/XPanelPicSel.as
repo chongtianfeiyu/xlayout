@@ -1,29 +1,39 @@
-package
+package xlayoutPanel
 {
 	
 	import flash.filesystem.File;
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
+	import flash.utils.setTimeout;
 	
 	import feathers.controls.Alert;
 	import feathers.controls.Button;
 	import feathers.controls.Header;
 	import feathers.controls.Panel;
+	import feathers.controls.ToggleButton;
 	import feathers.core.IFeathersControl;
 	import feathers.data.ListCollection;
 	import feathers.layout.TiledRowsLayout;
 	import feathers.layout.VerticalLayout;
 	
+	import starling.core.Starling;
 	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;
-	import starling.display.Image;
-	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 	import starling.utils.AssetManager;
+	
+	import xlayoutSubUI.LabelPickList;
+	import xlayoutSubUI.LabelTextInput;
+	import xlayoutSubUI.ToXML;
+	import xlayoutSubUI.XDragPanel;
+	import xlayoutSubUI.XDragSprite;
+	import xlayoutSubUI.XImg;
+	import xlayoutSubUI.XImgToXML;
+	import xlayoutSubUI.XLayoutGroup;
 
-	public class PixelSetting extends XDragPanel
+	public class XPanelPicSel extends XDragPanel
 	{
 		private var m2:Panel;
 
@@ -34,17 +44,28 @@ package
 		private var mode2:LabelPickList;
 
 		private var m1:Panel;
-		public static var one:PixelSetting;
+		public static var one:XPanelPicSel;
 
 		private var pngShower:XPngShower;
 
 		private var pngDir:LabelTextInput;
+		private var bgDir:LabelTextInput;
 
 		private var pngFilter:LabelTextInput;
 
 		private var res:AssetManager;
 		private var atlasNow:TextureAtlas;
-		public function PixelSetting(titleStr:String,limit:Rectangle=null)
+
+		private var btn_sml:ToggleButton;
+
+		private var btn_remove:Button;
+
+		private var btn_addToStage:Button;
+
+		private var btn_xml:Button;
+
+		private var bg:XDragSprite;
+		public function XPanelPicSel(titleStr:String,limit:Rectangle=null)
 		{
 			one = this;
 			super(titleStr,limit);
@@ -67,34 +88,69 @@ package
 			m1 = newSection(this,"贴图路径设置",false);
 			m1.setSize(sectionWidth,100);
 			
-			pngDir = new LabelTextInput(m1,ctrlWidth,ctrlHeight,mid,"路径");
-			pngDir.textInput.addEventListener(Event.CHANGE,loadTexture);
-			
-			pngFilter = new LabelTextInput(m1,ctrlWidth,ctrlHeight,mid,"过滤");
-			pngFilter.textInput.addEventListener(Event.CHANGE,showAtlas);
-			
+			pngDir = new LabelTextInput(m1,ctrlWidth,ctrlHeight,mid,"路径",loadTexture,true,LabelTextInput.TYPE_TXT);
+			pngFilter = new LabelTextInput(m1,ctrlWidth,ctrlHeight,mid,"过滤",showAtlas,true,LabelTextInput.TYPE_TXT);
 			
 			var m3:Panel = newSection(this,"命令");
 				m3.setSize(sectionWidth,120);
 			
-			var addToStage_btn:Button = new Button();
-			addToStage_btn.label="添加到场景";
-			addToStage_btn.addEventListener(Event.TRIGGERED,addPngToStage);
-			m3.addChild(addToStage_btn);
+			btn_addToStage = new Button();
+			btn_addToStage.label="添加到场景";
+			btn_addToStage.addEventListener(Event.TRIGGERED,addPngToStage);
+			m3.addChild(btn_addToStage);
 			
-			var remove_btn:Button = new Button();
-			remove_btn.label="从场景移除";
-			remove_btn.addEventListener(Event.TRIGGERED,remove);
-			m3.addChild(remove_btn);
+			btn_remove = new Button();
+			btn_remove.label="从场景移除";
+			btn_remove.addEventListener(Event.TRIGGERED,remove);
+			m3.addChild(btn_remove);
 			
-			var xml_btn:Button = new Button();
-			xml_btn.label="导出XML";
-			xml_btn.addEventListener(Event.TRIGGERED,xml);
-			m3.addChild(xml_btn);
+			btn_xml = new Button();
+			btn_xml.label="导出XML";
+			btn_xml.addEventListener(Event.TRIGGERED,xml);
+			m3.addChild(btn_xml);
+			
+			btn_sml = new ToggleButton();
+			btn_sml.label="1/2显示";
+			btn_sml.addEventListener(Event.CHANGE,sml);
+			m3.addChild(btn_sml);
 				
 			pngShower = new XPngShower("图片选择"); this.addChild(pngShower);
 			pngShower.setSize(302,360);
 			
+			loadTexture("",pngDir.textInput.text,false);
+		}
+		private function sml(e:*):void
+		{
+			var ww:int = Starling.current.stage.stageWidth;
+			var hh:int = Starling.current.stage.stageHeight;
+			if(btn_sml.isSelected){
+				XLayoutGroup.rootBox.resize(ww,hh,.5);
+			}else{
+				XLayoutGroup.rootBox.resize(ww,hh,1);
+				reDrawBtns();
+			}
+		}
+		
+		private function reDrawBtns():void
+		{
+			function redrawOneBtn(bt:Button):void{
+				var saveLabel:String = bt.label;
+				bt.label = "";
+				setTimeout(function(bt,saveLabel):void{
+					bt.label = saveLabel;
+				},111,bt,saveLabel);
+			}
+			function searchDisplayObjectContainer(p:DisplayObjectContainer):void{
+				if(p is Button){
+					redrawOneBtn(p as Button);
+				}else{
+					for (var i:int = 0; i < p.numChildren; i++){
+						var sub:DisplayObjectContainer = p.getChildAt(i) as DisplayObjectContainer;
+						if(sub) searchDisplayObjectContainer(sub);
+					}
+				}
+			}
+			searchDisplayObjectContainer(stage);
 		}
 		private function xml(e:*):void
 		{
@@ -130,16 +186,22 @@ package
 				XBox.lastSelObject.removeFromParent(true);
 				XBox.remove(XBox.lastSelObject);
 				XBox.lastSelObject = null;
+				XPanelTreeSel.one.update();
 			}
 		}
 		private function addPngToStage(e:*):void
 		{
+			var c:XLayoutGroup = XBox.lastSelObject as XLayoutGroup;
+			if(!c){
+				XAlert.show(canNotAdd);
+				return;
+			}
 			for (var i:int = 0; i < pngShower.numChildren; i++){
 				var img:XImg = pngShower.getChildAt(i) as XImg;
 				if(img.hasSel)addOnePngToStage(img);
 			}
 		}
-		
+		public static var canNotAdd:String = "当前选择的不是容器，\n不能添加子对象，\n请在【选择面板】选择XLayoutGroup对象，\n再添加子对象";
 		private function addOnePngToStage(img:XImg):void
 		{
 			if(img){
@@ -148,7 +210,13 @@ package
 				drag.x = int(100+Math.random()*100);
 				drag.y = int(100+Math.random()*100);
 				drag.dragEndFunction = dragEndFunction;
-				XLayoutGroup.rootBox.addChild(drag);
+				var c:XLayoutGroup = XBox.lastSelObject as XLayoutGroup;
+				if(!c){
+					XAlert.show(canNotAdd);
+					return;
+				}
+				c.addChild(drag);
+				XPanelTreeSel.one.update();
 			}
 		}
 		private function dragEndFunction(drag:XDragSprite):void
@@ -156,12 +224,18 @@ package
 			XBox.draw(drag);
 			XBox.sel(drag,true);
 		}
-		private function loadTexture(e:*):void
+
+		private function loadTexture(key:String,txt:String,isNumber:Boolean):void
 		{
-			var png:String = pngDir.textInput.text;
+			var png:String = txt;
 			var xml:String = png.replace(".png",".xml");
-			var f:File = new File(png);
-			if(!f.exists){
+			if(png=="")return;
+			try{
+				var f:File = new File(png);
+				if(!f.exists || f.isDirectory){
+					return;
+				}
+			}catch(error:Error){
 				return;
 			}
 			var f2:File = new File(xml);
@@ -178,11 +252,11 @@ package
 				if(r==1){
 					var a:TextureAtlas = res.getTextureAtlas(fileName);
 					atlasNow = a;
-					showAtlas();
+					showAtlas("",pngFilter.textInput.text,false);
 				}
 			});
 		}
-		private function showAtlas():void
+		private function showAtlas(key:String,txt:String,isNumber:Boolean):void
 		{
 			if(!atlasNow){
 				return;
@@ -190,7 +264,7 @@ package
 			pngShower.removeChildren(0,-1,true);
 			var nam:Vector.<String> = new Vector.<String>;
 			atlasNow.getNames("",nam);
-			var f:String = pngFilter.textInput.text;
+			var f:String = txt;
 			for (var i:int = 0; i < nam.length; i++) {
 				if(f!=""){
 					if(nam[i].indexOf(f)<0) continue;
@@ -217,6 +291,15 @@ package
 			var img:XImg = e.data as XImg;
 			if(img){
 				addOnePngToStage(img);
+				setTimeout(clearSel,222);
+			}
+		}
+		
+		public function clearSel():void
+		{
+			for (var i:int = 0; i < pngShower.numChildren; i++){
+				var img:XImg = pngShower.getChildAt(i) as XImg;
+				if(img.hasSel) img.sel(false);
 			}
 		}
 		private function newSection(f:DisplayObjectContainer,titleStr:String="",rowLayout:Boolean=true):Panel

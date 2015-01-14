@@ -115,7 +115,7 @@ package feathers.themes
 		 */
 		public static const FONT_NAME:String = "SourceSansPro";
 
-		protected static const PRIMARY_BACKGROUND_COLOR:uint = 0x4a4137;
+		protected static const PRIMARY_BACKGROUND_COLOR:uint = 0x000000;
 		protected static const LIGHT_TEXT_COLOR:uint = 0xe5e5e5;
 		protected static const DARK_TEXT_COLOR:uint = 0x1a1816;
 		protected static const SELECTED_TEXT_COLOR:uint = 0xff9900;

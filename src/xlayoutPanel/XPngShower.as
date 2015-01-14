@@ -1,8 +1,9 @@
-package
+package xlayoutPanel
 {
 	import flash.geom.Rectangle;
 	
 	import feathers.layout.TiledRowsLayout;
+	import xlayoutSubUI.XDragPanel;
 	
 	public class XPngShower extends XDragPanel
 	{
@@ -16,7 +17,6 @@ package
 			l.tileHorizontalAlign = TiledRowsLayout.TILE_HORIZONTAL_ALIGN_LEFT;
 			l.tileVerticalAlign = TiledRowsLayout.TILE_VERTICAL_ALIGN_TOP;
 			l.useSquareTiles = false;
-			l.useVirtualLayout = false;
 			layout = l;
 		}
 	}

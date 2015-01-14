@@ -7,6 +7,11 @@ accordance with the terms of the accompanying license agreement.
 */
 package feathers.core
 {
+	import flash.errors.IllegalOperationError;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	
 	import feathers.controls.text.BitmapFontTextRenderer;
 	import feathers.controls.text.StageTextTextEditor;
 	import feathers.events.FeathersEventType;
@@ -14,17 +19,13 @@ package feathers.core
 	import feathers.layout.ILayoutDisplayObject;
 	import feathers.skins.IStyleProvider;
 	import feathers.utils.display.getDisplayObjectDepthFromStage;
-
-	import flash.errors.IllegalOperationError;
-	import flash.geom.Matrix;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-
+	
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.utils.MatrixUtil;
+	import starling.utils.RectangleUtil;
 
 	/**
 	 * Dispatched after <code>initialize()</code> has been called, but before
@@ -1546,6 +1547,11 @@ package feathers.core
 			resultRect.y = minY;
 			resultRect.width  = maxX - minX;
 			resultRect.height = maxY - minY;
+			
+			// if we have a scissor rect, intersect it with our bounds
+			if (clipRect)
+				RectangleUtil.intersect(resultRect, clipRect, 
+					resultRect);
 
 			return resultRect;
 		}

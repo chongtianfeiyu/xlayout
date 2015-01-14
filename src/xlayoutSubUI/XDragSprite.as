@@ -1,4 +1,4 @@
-package
+package xlayoutSubUI
 {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -23,8 +23,7 @@ package
 		private var subObject:DisplayObject;
 		public function XDragSprite(subObject:DisplayObject,moveInX:Boolean=true,moveInY:Boolean=true,limit:Rectangle=null,dragObject:DisplayObject=null)
 		{
-			this.subObject = subObject;
-			if(subObject) addChild(subObject);
+			add(subObject);
 			this.dragObject = dragObject;
 			if(!dragObject) this.dragObject = this;
 			
@@ -33,6 +32,11 @@ package
 			this.moveInX = moveInX;
 			checkLimit();
 			this.addEventListener(TouchEvent.TOUCH,onT);
+		}
+		public function add(subObject:DisplayObject):void
+		{
+			this.subObject = subObject;
+			if(subObject) addChild(subObject);
 		}
 		private function onT(e:TouchEvent):void
 		{

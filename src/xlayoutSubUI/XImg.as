@@ -1,4 +1,4 @@
-package
+package xlayoutSubUI
 {
 	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
@@ -126,7 +126,7 @@ package
 		{
 			this.hasSel = yes;
 			if(!selIcon){
-				selIcon = new Image(LayoutTest.theme.atlas.getTexture("button-back-down-skin"));
+				selIcon = new Image(XLayoutEditor.theme.atlas.getTexture("button-back-down-skin"));
 				if(b<0.3){
 					var bb:Number = 0.3/b;
 					selIcon.scaleX *= bb;

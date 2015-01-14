@@ -1,4 +1,4 @@
-package 
+package xlayoutPanel 
 {
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
@@ -156,8 +156,10 @@ package
 					box.layoutBorder();
 					if(lastSelObject && lastSelObject!=ob && lastSelObject!=null){
 						sel(lastSelObject,false);
+						XPanelTreeSel.one.sel(ob);
 					}
 					lastSelObject = ob;
+					G.showAttr(ob);
 				}
 				if(box.hasSel && !yes){
 					box.hasSel = false;

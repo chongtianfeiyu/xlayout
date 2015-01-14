@@ -1,4 +1,4 @@
-package
+package xlayoutSubUI
 {
 	import flash.net.SharedObject;
 	
@@ -11,6 +11,7 @@ package
 	import feathers.layout.AnchorLayoutData;
 	
 	import starling.display.DisplayObjectContainer;
+	import starling.events.Event;
 	import starling.text.TextField;
 	import starling.utils.HAlign;
 	
@@ -29,9 +30,11 @@ package
 		private var saveTxt:String;
 		private var labelStr:String;
 		private var arr:Array;
-		public function LabelPickList(p:DisplayObjectContainer,w:int,h:int,mid:int,labelStr:String,arr:Array)
+		private var f:Function;
+		public function LabelPickList(p:DisplayObjectContainer,w:int,h:int,mid:int,labelStr:String,arr:Array,f:Function=null)
 		{
 			super();
+			this.f = f;
 			this.arr = arr;
 			this.h = h;
 			this.w = w;
@@ -39,7 +42,11 @@ package
 			this.mid = mid;
 			pickList = new PickerList();
 			pickList.dataProvider = new ListCollection(arr);
-			p.addChild(this);
+			if(p)p.addChild(this);
+			pickList.addEventListener(Event.CHANGE,function(e:*):void{
+				if(G.SkipEvent) return;
+				if(f) f(pickList.selectedItem);
+			})
 		}
 		override protected function initialize():void
 		{
