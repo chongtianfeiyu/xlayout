@@ -8,6 +8,7 @@ package xlayoutSubUI
 		public function XImgToXML(img:XImg) 
 		{
 			super();
+			classType = "img";
 			var image:Image = new Image(img.t);
 			this.res = img.name;
 			add(image);

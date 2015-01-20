@@ -7,7 +7,6 @@ package xlayoutSubUI
 	import feathers.controls.Button;
 	import feathers.controls.Header;
 	import feathers.controls.Panel;
-	import feathers.controls.ScrollBar;
 	import feathers.core.IFeathersControl;
 	import feathers.layout.TiledRowsLayout;
 	import feathers.layout.VerticalLayout;

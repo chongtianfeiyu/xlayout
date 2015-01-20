@@ -11,6 +11,7 @@ package xlayoutPanel
 	import starling.textures.TextureAtlas;
 	import starling.utils.AssetManager;
 	
+	import xlayoutSubUI.EgIBtn;
 	import xlayoutSubUI.EgTxt;
 	import xlayoutSubUI.XDragPanel;
 	import xlayoutSubUI.XDragSprite;
@@ -24,6 +25,7 @@ package xlayoutPanel
 		private var atlasNow:TextureAtlas;
 
 		private var txtBtn:Button;
+		private var ibtnBtn:Button;
 		public function XPanelCtrl(titleStr:String,limit:Rectangle=null)
 		{
 			one = this;
@@ -44,15 +46,25 @@ package xlayoutPanel
 			txtBtn.label = "txt";
 			addChild(txtBtn);
 			
+			ibtnBtn = new Button();
+			ibtnBtn.label = "ibtn";
+			addChild(ibtnBtn);
+			
 			addEventListener(TouchEvent.TOUCH,onT);
 		}
 		
 		private function onT(e:TouchEvent):void{
 			var t:Touch = e.getTouch(this,TouchPhase.ENDED);
 			if(t){
+				var drag:XDragSprite;
 				if(t.isTouching(txtBtn)){
 					if(!isContainer()) return;
-					var drag:XDragSprite = new EgTxt();
+					drag = new EgTxt();
+					addToStage(drag);
+				}
+				if(t.isTouching(ibtnBtn)){
+					if(!isContainer()) return;
+					drag = new EgIBtn();
 					addToStage(drag);
 				}
 			}

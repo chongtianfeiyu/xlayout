@@ -38,7 +38,7 @@ package xlayoutPanel
 		private var m1:Panel;
 		public static var one:XPanelBgSetting;
 
-		private var pngShower:XPngShower;
+		private var pngShower:XPicShower;
 
 		private var pngDir:LabelTextInput;
 		private var bgDir:LabelTextInput;

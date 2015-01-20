@@ -1,14 +1,15 @@
 package
 {
 	
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
 	
 	import feathers.controls.Panel;
-	import feathers.layout.AnchorLayout;
 	import feathers.layout.HorizontalLayoutData;
 	import feathers.themes.MetalWorksDesktopTheme;
 	
+	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -23,20 +24,20 @@ package
 	import xlayoutPanel.XPanelPicSel;
 	import xlayoutPanel.XPanelTreeSel;
 	
+	import xlayoutSubUI.IDrog;
 	import xlayoutSubUI.XLayoutGroup;
 	
 	public class XLayoutEditor extends Sprite
 	{
 		private var p:Panel;
-
+		public static var one:XLayoutEditor;
 		public static var theme:MetalWorksDesktopTheme;
-
 		public static var layer0:Sprite;
-
 		public static var layer1:Sprite;
-
+		public var dragCursor:DragCursor;
 		public function XLayoutEditor()
 		{
+			one = this;
 			addEventListener(Event.ADDED_TO_STAGE,onAdd);
 		}
 		
@@ -93,6 +94,8 @@ package
 			x6.y = 220;
 			layer1.addChild(x6);
 			
+			dragCursor = new DragCursor();
+			addChild(dragCursor);
 			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, stage_keyDownHandler);
 		}
 		protected function stage_keyDownHandler(e:KeyboardEvent):void
@@ -137,6 +140,27 @@ package
 				ob.x += xx;
 				ob.y += yy;
 				XBox.draw(ob);
+			}
+		}
+		
+		public function showDragCursor(yes:Boolean, xx:Number, yy:Number):void{
+			XLayoutEditor.one.dragCursor.visible = yes;
+			if(yes){
+				XLayoutEditor.one.dragCursor.x = xx;
+				XLayoutEditor.one.dragCursor.y = yy;
+			}else{
+				var ds:Array = G.dropTargets;
+				for (var i:int = 0; i < ds.length; i++){
+					var item:DisplayObject = ds[i];
+					var iDrog:IDrog = item as IDrog;
+					if(iDrog){
+						var ok:Boolean = iDrog.containsDrog(xx,yy);
+						if(ok){
+							iDrog.doDrog(G.dragData);
+							G.dragData = null;
+						}
+					}
+				}
 			}
 		}
 	}

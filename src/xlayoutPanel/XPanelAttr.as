@@ -8,7 +8,7 @@ package xlayoutPanel
 	public class XPanelAttr extends XDragPanel
 	{
 		public static var one:XPanelAttr;
-		private var pngShower:XPngShower;
+		private var pngShower:XPicShower;
 		private var res:AssetManager;
 		private var atlasNow:TextureAtlas;
 		public function XPanelAttr(titleStr:String,limit:Rectangle=null)

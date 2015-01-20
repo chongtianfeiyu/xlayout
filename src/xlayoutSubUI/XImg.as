@@ -1,6 +1,9 @@
 package xlayoutSubUI
 {
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.ui.Mouse;
+	import flash.ui.MouseCursor;
 	import flash.utils.getTimer;
 	
 	import starling.display.Image;
@@ -10,6 +13,8 @@ package xlayoutSubUI
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.textures.Texture;
+	
+	import xlayoutPanel.XPicShower;
 	
 	public class XImg extends Sprite
 	{
@@ -33,6 +38,7 @@ package xlayoutSubUI
 		public static var DOUBLE_CLICK:String = "双击";
 		public var isRotaion:Boolean;
 		private var lastSelTime:int;
+		private var dragging:Boolean;
 		public function clone(maxWidth:int):XImg
 		{
 			return new XImg(t,name,frame,r,maxWidth);
@@ -81,7 +87,6 @@ package xlayoutSubUI
 			this.clipRect = clip;
 			this.name = _name;
 			if(r.width>max || r.height>max){
-				
 				if(frame.width>frame.height){
 					b = max/frame.width;
 				}else{
@@ -98,23 +103,42 @@ package xlayoutSubUI
 		private function onT(e:TouchEvent):void
 		{
 			var t:Touch;
+			t = null;
 			t = e.getTouch(this,TouchPhase.BEGAN);
 			if(t){
 				lastX = t.globalX;
 				lastY = t.globalY;
+				dragging = true;
+				return;
+			}
+			t = null;
+			t = e.getTouch(this,TouchPhase.MOVED);
+			if(t && dragging){
+				var p1:Point = new Point(lastX,lastY);
+				var p2:Point = t.getLocation(stage);
+				if(Point.distance(p1,p2)>10){
+					G.dragData = {name:name};
+					XLayoutEditor.one.showDragCursor(true,p2.x,p2.y);
+				}
 				return;
 			}
 			t = null;
 			t = e.getTouch(this,TouchPhase.ENDED);
 			if(t){
+				
+				dragging = false;
+				XLayoutEditor.one.showDragCursor(false,t.globalX,t.globalY)
+				
 				if(Math.abs(t.globalX-lastX)<10){
 					if(Math.abs(t.globalY-lastY)<10){
 						var now:int = getTimer();
 						if(now-lastSelTime<600) dispatchEventWith(DOUBLE_CLICK,false,this);
 						lastSelTime = now;
 						if(hasSel){
+							XPicShower.one.showImgName();
 							sel(false);
 						}else{
+							XPicShower.one.showImgName(name,this.x+12,this.y+44);
 							sel(true);
 						}
 					}

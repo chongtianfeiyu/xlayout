@@ -16,26 +16,27 @@ package xlayoutSubUI
 		public function EgTxt() 
 		{
 			super();
+			classType = "txt";
 			init();
 			var str:String = Math.random().toFixed(2);
 			txt = new TextField(lastW,lastH,str,lastFontName,lastFontSize,lastColor);
 			addChild(txt);
 		}
 		
-		private function init():void{
+		public override function init():void{
+			super.init();
 			var txt:int = LabelTextInput.TYPE_TXT;
 			var num:int = LabelTextInput.TYPE_NUMBER;
 			var clr:int = LabelTextInput.TYPE_COLOR;
-			parr = [
-				[txt,"defaultValue"],
-				[txt,"font"],
-				[num,"fontsize",1,300],
-				[num,"w",1,9999],
-				[num,"h",1,9999],
-				[clr,"color",0,0xffffff],
-				[num,"xbase",0,1],
-				[num,"ybase",0,1],
-			]
+			var tex:int = LabelTextInput.TYPE_TXT_TEXTURE;
+			parr.push([txt,"defaultValue"]);
+			parr.push([txt,"font"]);
+			parr.push([num,"fontsize",1,300]);
+			parr.push([num,"w",1,9999]);
+			parr.push([num,"h",1,9999]);
+			parr.push([clr,"color",0,0xffffff]);
+			parr.push([num,"xbase",0,1]);
+			parr.push([num,"ybase",0,1]);
 		}
 		override public function toXML():String{
 			var ww:Number = this.parent.width;
@@ -50,30 +51,6 @@ package xlayoutSubUI
 			var str3:String = ' />\n';
 			
 			return str1+str2+str3;
-		}
-		override public function arr():Array{
-			return parse(parr);
-		}
-		private var _xbase:Number = 0;
-		public function get xbase():Number{
-			return _xbase;
-		}
-		public function set xbase(v:Number):void{
-			var ww:Number = this.parent.width;
-			this.x = ww*v;
-			_xbase = v;
-			XBox.draw(this);
-		}
-		private var _ybase:Number = 0;
-		private var parr:Array;
-		public function get ybase():Number{
-			return _ybase;
-		}
-		public function set ybase(v:Number):void{
-			var hh:Number = this.parent.height;
-			this.y = hh*v;
-			_ybase = v;
-			XBox.draw(this);
 		}
 		public function get defaultValue():String{
 			return txt.text;

@@ -46,7 +46,7 @@ package xlayoutPanel
 		private var m1:Panel;
 		public static var one:XPanelPicSel;
 
-		private var pngShower:XPngShower;
+		private var pngShower:XPicShower;
 
 		private var pngDir:LabelTextInput;
 		private var bgDir:LabelTextInput;
@@ -76,7 +76,7 @@ package xlayoutPanel
 			layout.gap = 1;
 			this.layout = layout;
 			
-			res = new AssetManager();
+			res = G.res = new AssetManager();
 			
 			var sectionWidth:int = 302;
 			var ctrlWidth:int = 250;
@@ -114,7 +114,7 @@ package xlayoutPanel
 			btn_sml.addEventListener(Event.CHANGE,sml);
 			m3.addChild(btn_sml);
 				
-			pngShower = new XPngShower("图片选择"); this.addChild(pngShower);
+			pngShower = new XPicShower("图片选择"); this.addChild(pngShower);
 			pngShower.setSize(302,360);
 			
 			loadTexture("",pngDir.textInput.text,false);

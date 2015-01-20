@@ -6,6 +6,7 @@ package
 	
 	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;
+	import starling.utils.AssetManager;
 	
 	import xlayoutPanel.XBox;
 	import xlayoutPanel.XPanelAttr;
@@ -19,6 +20,9 @@ package
 	public class G
 	{
 		private static var _SkipEvent:Boolean;
+		public static var res:AssetManager;
+		public static var dragData:Object = null;
+		public static var dropTargets:Array = [];
 
 		public static function get SkipEvent():Boolean
 		{

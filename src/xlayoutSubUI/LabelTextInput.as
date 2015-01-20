@@ -1,6 +1,7 @@
 package xlayoutSubUI
 {
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.net.SharedObject;
 	import flash.ui.Mouse;
 	import flash.ui.MouseCursor;
@@ -23,7 +24,7 @@ package xlayoutSubUI
 	import xlayoutPanel.XPanelAttr;
 	import xlayoutPanel.XPanelColorPicker;
 	
-	public class LabelTextInput extends LayoutGroupListItemRenderer
+	public class LabelTextInput extends LayoutGroupListItemRenderer implements IDrog
 	{
 
 		public var label:TextField;
@@ -45,6 +46,7 @@ package xlayoutSubUI
 		public static const TYPE_NUMBER:int = 1;
 		public static const TYPE_TXT:int = 0;
 		public static const TYPE_COLOR:int = 2;
+		public static const TYPE_TXT_TEXTURE:int = 3;
 		
 		public static var lastSel:LabelTextInput;
 		public var dragD:Point = new Point();
@@ -73,6 +75,16 @@ package xlayoutSubUI
 			if(val!=null) so.data[key] = val;
 			return so.data[key];
 		}
+		public function doDrog(ob:*):void
+		{
+			textInput.text = ob.name;
+		}
+		public function containsDrog(xx:int,yy:int):Boolean
+		{
+			var p:Point = this.localToGlobal(new Point())
+			var r:Rectangle = new Rectangle(p.x,p.y,this.w,this.h);
+			return r.contains(xx,yy);
+		}
 		override protected function initialize():void
 		{
 			super.initialize();
@@ -90,6 +102,9 @@ package xlayoutSubUI
 			label.text = labelStr;
 			label.x = 0;
 			label.y = 0;
+			if(type == TYPE_TXT_TEXTURE){
+				G.dropTargets.push(this);
+			}
 			if(type==TYPE_NUMBER)label.addEventListener(TouchEvent.TOUCH,onLabelDrag);
 			addChild(label);
 			
@@ -97,7 +112,11 @@ package xlayoutSubUI
 			textInput.addEventListener(FeathersEventType.FOCUS_IN,onFocusIn);
 			textInput.addEventListener(Event.CHANGE,onChange);
 		}
-		
+		public override function dispose():void{
+			var index:int = G.dropTargets.indexOf(this);
+			if(index>=0) G.dropTargets.splice(index,1);
+			super.dispose();
+		}
 		private function onLabelDrag(e:TouchEvent):void{
 			var t:Touch;
 			t = null;
@@ -107,7 +126,7 @@ package xlayoutSubUI
 			}
 			t = null;
 			t = e.getTouch(label,TouchPhase.MOVED);
-			if(t && lableDragging){
+			if(t && lableDragging ){
 				var step:Number = step;
 				var n:Number = parseFloat(textInput.text);
 				step = n>1?   1 : 0.01;
@@ -141,7 +160,7 @@ package xlayoutSubUI
 			if(type == TYPE_NUMBER){
 				b[labelStr] = parseFloat(textInput.text); return;
 			}
-			if(type == TYPE_TXT){
+			if(type == TYPE_TXT || type == TYPE_TXT_TEXTURE ){
 				b[labelStr] = textInput.text; return;
 			}
 		}
