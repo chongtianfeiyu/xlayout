@@ -116,7 +116,7 @@ package xlayoutPanel
 				var boxContainer:Sprite = new Sprite();
 				XBox.container = boxContainer;
 			}
-			Starling.current.stage.addChild(container);
+			XLayoutEditor.one.addChild(container);
 			var w:Number = ob.width;
 			var h:Number = ob.height;
 			if(w<=0 || h<=0) return;

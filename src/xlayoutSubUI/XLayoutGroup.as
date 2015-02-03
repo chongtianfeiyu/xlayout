@@ -17,7 +17,6 @@ package xlayoutSubUI
 	
 	import starling.core.Starling;
 	import starling.display.DisplayObjectContainer;
-	import starling.display.Quad;
 	import starling.events.Event;
 	import starling.events.ResizeEvent;
 	
@@ -29,9 +28,10 @@ package xlayoutSubUI
 		public function toXML():String{
 			return "LayoutGroupBox\n";
 		}
-		public function XLayoutGroup(p:DisplayObjectContainer,isRoot:Boolean=false)
+		public function XLayoutGroup(p:DisplayObjectContainer,isRoot:Boolean=false,_resizer:Resizer=null)
 		{
 			super();
+			if(_resizer!=null)resizer = _resizer;
 			this.isRoot = isRoot;
 			p.addChild(this);
 		}
@@ -263,34 +263,45 @@ package xlayoutSubUI
 		}
 		private var _isRoot:Boolean;
 
+		public static var resizer:Resizer;
+		private var me:DisplayObjectContainer;
+
 		public function set isRoot(v:Boolean):void
 		{
 			this._isRoot = v; 
 			if(v){
 				rootBox = this;
-				autoSizeMode = LayoutGroup.AUTO_SIZE_MODE_STAGE;
-				if(!stage){
-					addEventListener(starling.events.Event.ADDED_TO_STAGE,onAdd);
-				}else{
-					onAdd();
-				}
+//				autoSizeMode = LayoutGroup.AUTO_SIZE_MODE_STAGE;
+//				if(!stage){
+//					addEventListener(starling.events.Event.ADDED_TO_STAGE,onAdd);
+//				}else{
+//					onAdd();
+//				}
+				resizer.addEventListener("改变尺寸",onResize);
+				resize(resizer.x,resizer.y);
+				me = this;
+				setTimeout(function():void{XBox.draw(me);},39);
 			}
 		}
 		private function onAdd(e:starling.events.Event=null):void
 		{
 			stage.addEventListener(flash.events.Event.RESIZE,onResize);
 		}
-		private function onResize(e:ResizeEvent):void
+		private function onResize(e:starling.events.Event):void
 		{
-			resize(e.width,e.height);
+			resize(e.data.x,e.data.y);
 		}
 		
 		public function resize(ww:int, hh:int ,scale:Number=1):void
 		{
 			trace(this.width,this.height);
-			stage.stageWidth = ww*(1/scale);
-			stage.stageHeight = hh*(1/scale);
-			Starling.current.viewPort = new Rectangle(0,0,ww,hh);
+//			stage.stageWidth = ww*(1/scale);
+//			stage.stageHeight = hh*(1/scale);
+//			Starling.current.viewPort = new Rectangle(0,0,ww,hh);
+			width = ww;
+			height = hh;
+			scaleX = scale;
+			scaleY = scale;
 		}
 		public function get isRoot():Boolean
 		{ 

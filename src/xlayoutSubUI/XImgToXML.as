@@ -13,8 +13,8 @@ package xlayoutSubUI
 			this.res = img.name;
 			add(image);
 		}
-		override public function toXML():String{
-			return '<ui type="img" name="'+name+'" res="'+res+'" x="'+x+'" y="'+y+'" />\n';
-		}
+//		override public function toXML():String{
+//			return '<ui type="img" name="'+name+'" res="'+res+'" x="'+x+'" y="'+y+'" />\n';
+//		}
 	}
 }

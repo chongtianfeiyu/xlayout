@@ -1,7 +1,6 @@
 package
 {
 	
-	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
 	
@@ -26,7 +25,6 @@ package
 	
 	import xlayoutSubUI.IDrog;
 	import xlayoutSubUI.XLayoutGroup;
-	
 	public class XLayoutEditor extends Sprite
 	{
 		private var p:Panel;
@@ -35,6 +33,8 @@ package
 		public static var layer0:Sprite;
 		public static var layer1:Sprite;
 		public var dragCursor:DragCursor;
+
+		private var resizer:Resizer;
 		public function XLayoutEditor()
 		{
 			one = this;
@@ -44,8 +44,8 @@ package
 		private function onAdd(e:*):void
 		{
 			theme = new MetalWorksDesktopTheme();
-			
-			var ui:XLayoutGroup = new XLayoutGroup(this,true);
+			resizer = new Resizer(this,640,960);
+			var ui:XLayoutGroup = new XLayoutGroup(this,true,resizer);
 			ui.name="uiRoot";
 			
 			var d1:HorizontalLayoutData = new HorizontalLayoutData();
